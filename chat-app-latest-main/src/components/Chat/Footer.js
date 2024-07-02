@@ -72,6 +72,7 @@ const ChatInput = ({
   setValue,
   value,
   inputRef,
+  onKeyDown
 }) => {
   const [openActions, setOpenActions] = React.useState(false);
 
@@ -82,6 +83,7 @@ const ChatInput = ({
       onChange={(event) => {
         setValue(event.target.value);
       }}
+      onKeyDown={onKeyDown}
       fullWidth
       placeholder="Write a message..."
       variant="filled"
@@ -163,6 +165,8 @@ const Footer = () => {
     (state) => state.conversation.direct_chat
   );
 
+  const buttonRef = useRef(null);
+
   const user_id = window.localStorage.getItem("user_id");
 
   const isMobile = useResponsive("between", "md", "xs", "sm");
@@ -238,6 +242,11 @@ const Footer = () => {
               setValue={setValue}
               openPicker={openPicker}
               setOpenPicker={setOpenPicker}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  buttonRef.current.click();
+                }
+              }}
             />
           </Stack>
           <Box
@@ -254,6 +263,7 @@ const Footer = () => {
               justifyContent="center"
             >
               <IconButton
+                ref={buttonRef}
                 onClick={() => {
                   console.log(current_conversation)
                   socket.emit("text_message", {
