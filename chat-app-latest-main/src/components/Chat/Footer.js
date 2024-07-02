@@ -263,6 +263,7 @@ const Footer = () => {
                     to: current_conversation.user_id,
                     type: containsUrl(value) ? "Link" : "Text",
                   });
+                  setValue("");
                 }}
               >
                 <PaperPlaneTilt color="#ffffff" />

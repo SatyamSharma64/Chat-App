@@ -39,7 +39,8 @@ const Conversation = ({ isMobile, menu }) => {
     });
 
     dispatch(SetCurrentConversation(current));
-  }, [dispatch]);
+  }, [room_id]);
+
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>
@@ -93,20 +94,33 @@ const Conversation = ({ isMobile, menu }) => {
 };
 
 const ChatComponent = () => {
+  const dispatch = useDispatch();
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const theme = useTheme();
 
   const messageListRef = useRef(null);
-  // const
-  // const {current_conversation} = useSelector((state)=> state.conversation.direct_chat);
-  const { current_messages } = useSelector(
+  const { conversations, current_messages } = useSelector(
     (state) => state.conversation.direct_chat
   );
+  console.log(current_messages);
+  const { room_id } = useSelector((state) => state.app);
 
   useEffect(() => {
     // Scroll to the bottom of the message list when new messages are added
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
   }, [current_messages]);
+  
+  useEffect(() => {
+    const current = conversations.find((el) => el?.id === room_id);
+    console.log('----',current)
+    socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
+      // data => list of messages
+      console.log(data, "List of messages");
+      dispatch(FetchCurrentMessages({ messages: data }));
+    });
+    console.log('setting current conversations', current);
+    dispatch(SetCurrentConversation(current));
+  }, [room_id]);
 
   return (
     <Stack

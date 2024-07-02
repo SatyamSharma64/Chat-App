@@ -72,7 +72,7 @@ const DashboardLayout = () => {
         // TODO => dispatch an action to add this in call_queue
         dispatch(PushToVideoCallQueue(data));
       });
-
+      
       socket.on("new_message", (data) => {
         const message = data.message;
         console.log('Got msg: ',current_conversation, data);
@@ -139,7 +139,7 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     };
-  }, [isLoggedIn, socket]);
+  }, [isLoggedIn, socket, current_conversation]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;
